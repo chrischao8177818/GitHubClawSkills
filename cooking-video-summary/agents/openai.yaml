@@ -1,0 +1,7 @@
+interface:
+  display_name: "Cooking Video Summary"
+  short_description: "Summarize cooking URLs into recipes"
+  default_prompt: "Use $cooking-video-summary to summarize this cooking URL and turn it into a structured recipe."
+
+policy:
+  allow_implicit_invocation: true
