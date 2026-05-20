@@ -36,18 +36,6 @@ install-skill-from-github.py --url https://github.com/chrischao8177818/GitHubCla
 install-skill-from-github.py --repo chrischao8177818/GitHubClawSkills --path cooking-video-summary
 ```
 
-## 使用範例
-
-```text
-<skill-name> <來源網址或內容>
-```
-
-例如：
-
-```text
-cooking-video-summary https://www.youtube.com/watch?v=HWBpr2MH_bE
-```
-
 ## 備註
 
 - 技能說明請看各自資料夾內的 `SKILL.md`
