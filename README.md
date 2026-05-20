@@ -10,14 +10,30 @@
 
 ## 安裝方式
 
-把 `<owner>`、`<repo>`、`<skill-path>` 換成實際值即可。
+只需要替換 `<skill-path>`，其他部分都固定使用這個 repo。
 
 ```bash
-install-skill-from-github.py --url https://github.com/<owner>/<repo>/tree/main/<skill-path>
+install-skill-from-github.py --url https://github.com/chrischao8177818/GitHubClawSkills/tree/main/<skill-path>
 ```
 
 ```bash
-install-skill-from-github.py --repo <owner>/<repo> --path <skill-path>
+install-skill-from-github.py --repo chrischao8177818/GitHubClawSkills --path <skill-path>
+```
+
+`<skill-path>` 代表技能資料夾名稱，例如 `cooking-video-summary`。
+
+## 安裝範例
+
+如果你要安裝 `cooking-video-summary`，可以直接這樣下：
+
+```bash
+install-skill-from-github.py --url https://github.com/chrischao8177818/GitHubClawSkills/tree/main/cooking-video-summary
+```
+
+或是：
+
+```bash
+install-skill-from-github.py --repo chrischao8177818/GitHubClawSkills --path cooking-video-summary
 ```
 
 ## 使用範例
