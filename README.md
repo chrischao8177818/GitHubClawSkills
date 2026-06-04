@@ -1,4 +1,4 @@
-# GitHubClawSkills
+﻿# GitHubClawSkills
 
 這個 repo 是 Codex Skill 的集合頁。
 
@@ -7,6 +7,7 @@
 | 技能名稱 | 路徑 |
 |---|---|
 | `cooking-video-summary` | [`cooking-video-summary/SKILL.md`](./cooking-video-summary/SKILL.md) |
+| `bookkeeping` | [`bookkeeping/SKILL.md`](./bookkeeping/SKILL.md) |
 
 ## 安裝方式
 
@@ -41,3 +42,10 @@ install-skill-from-github.py --repo chrischao8177818/GitHubClawSkills --path coo
 
 - 技能說明請看各自資料夾內的 `SKILL.md`
 - `LICENSE` 是授權檔
+
+### bookkeeping 安裝範例
+
+```bash
+install-skill-from-github.py --repo chrischao8177818/GitHubClawSkills --path bookkeeping --dest .agents/skills
+```
+

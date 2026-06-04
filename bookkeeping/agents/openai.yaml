@@ -1,0 +1,7 @@
+interface:
+  display_name: "記帳"
+  short_description: "整理記帳資料、月報彙整與分類分析"
+  default_prompt: "使用 $bookkeeping 整理記帳資料、保存每月 Markdown 記錄，並為指定月份產出分類月報與圓餅圖。"
+
+policy:
+  allow_implicit_invocation: true
