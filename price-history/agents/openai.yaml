@@ -1,0 +1,7 @@
+﻿interface:
+  display_name: "價格歷史"
+  short_description: "記錄採買品項價格並查詢最高、最低、平均與最近價格"
+  default_prompt: "使用 $price-history 記錄採買品項價格，或查詢品項與種類的歷史價格、最高、最低、平均與是否買貴。"
+
+policy:
+  allow_implicit_invocation: true

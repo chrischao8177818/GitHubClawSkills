@@ -7,7 +7,8 @@
 | 技能名稱 | 路徑 |
 |---|---|
 | `cooking-video-summary` | [`cooking-video-summary/SKILL.md`](./cooking-video-summary/SKILL.md) |
-| `bookkeeping` | [`bookkeeping/SKILL.md`](./bookkeeping/SKILL.md) |
+| ookkeeping | [ookkeeping/SKILL.md](./bookkeeping/SKILL.md) |
+| `price-history` | [`price-history/SKILL.md`](./price-history/SKILL.md) |
 
 ## 安裝方式
 
@@ -49,3 +50,8 @@ install-skill-from-github.py --repo chrischao8177818/GitHubClawSkills --path coo
 install-skill-from-github.py --repo chrischao8177818/GitHubClawSkills --path bookkeeping --dest .agents/skills
 ```
 
+### price-history 安裝範例
+
+```bash
+install-skill-from-github.py --repo chrischao8177818/GitHubClawSkills --path price-history --dest .agents/skills
+```
