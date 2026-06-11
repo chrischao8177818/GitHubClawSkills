@@ -1,49 +1,49 @@
 # cooking-video-summary
 
-料理內容整理與查找入口。
+這個 skill 的用途，是把料理影片、逐字稿、Shorts / Reels、食譜文章，整理成可長期查詢的私人料理知識庫。
 
-這個 skill 會先呼叫 `gemini-summary`，再把摘要整理成 `recipes/` 裡的標準食譜檔。
-如果你只是想查舊資料，直接輸入短句就可以，不需要手動指定搜尋範圍。
+## 你可以怎麼用
 
-## 使用方式
+- 輸入 YouTube、Shorts、Reels、PDF、食譜文章 URL。
+- 直接輸入像 `cooking <url>`、`煮飯 <url>`、`做菜 <url>`、`料理 <url>` 這類短指令。
+- 直接查菜名、食材、做法、工具、情境。
+- 先看 `recipes/INDEX.md`，再進單篇 `recipes/` 食譜檔。
+- 也可以直接丟食材名稱，例如 `幫我找雞肉料理`、`幫我找木耳的料理`。
+- 如果是多個食材一起查，例如 `雞肉 木耳`，會優先找同時符合條件的料理。
 
-整理新內容時，直接貼網址或來源內容即可：
+## 標準流程
 
-- `cooking-video-summary https://www.youtube.com/watch?v=...`
-- `cooking-video-summary https://youtu.be/...`
-- `cooking-video-summary Gemini Summary 摘要`
-- `cooking-video-summary YouTube 逐字稿`
-- `cooking-video-summary 食譜文章`
+1. 先用 `gemini-summary` 讀來源。
+2. 再把結果整理成標準食譜。
+3. 輸出到 repo 根目錄的 `recipes/`。
+4. 同步更新 `recipes/INDEX.md`。
+5. 最後把本次結果寫進 `artifacts/{issue-comment-id}/result.md`。
 
-也支援短別名：
+## 查找順序
 
-- `cooking <網址>`
-- `煮飯 <網址>`
-- `做菜 <網址>`
-- `料理 <網址>`
+1. `recipes/INDEX.md`
+2. `recipes/`
+3. `artifacts/`
 
-查找舊資料時，直接輸入短句：
+## 索引規則
 
-- `列出目前所有清單`
-- `幫我找「客家小炒」的作法`
-- `找所有炒菜`
-- `查「鮮魚炊飯」`
+- `recipes/INDEX.md` 是共用總索引。
+- 新增料理時一定要補進索引。
+- 索引以最新新增優先，新的資料列放最上方。
+- 每筆索引至少要有菜名、摘要、類型 / 情境 / 工具、主要食材、整理日期與連結。
+- 食材查找時，優先用索引裡的主要食材欄位比對，再回到單篇食譜確認細節。
+- 食材同義詞也要一起納入比對，例如 `木耳` 與 `黑木耳`、`雞胸` 與 `雞胸肉`。
+- 如果命中多筆，只先列出編號與料理品名，讓使用者挑選。
+- 使用者選定後，才顯示該料理的完整食譜內容。
+- 多筆清單預設不附摘要、食材、標籤或做法，避免一次顯示過多資訊。
+- 如果內容不完整，保留 `摘要未明確說明`，不要為了補欄位而亂猜。
 
-## 查找規則
+## 產出位置
 
-預設查找順序：
-
-1. `recipes/`
-2. `artifacts/`
-
-命中後會優先回傳原始 `.md` 內容，不會先幫你二次摘要。
-如果沒有命中，會直接說明找不到，並建議改用更精確的關鍵字。
-
-## 輸出位置
-
-- 正式料理成品：repo 根目錄的 `recipes/`
+- 正式食譜：`recipes/`
+- 共用索引：`recipes/INDEX.md`
 - 任務回報：`artifacts/{issue-comment-id}/result.md`
 
-## 詳細規則
+## 補充
 
-完整欄位格式、分類規則與失敗處理，請看 [`SKILL.md`](SKILL.md)。
+如果你要建立新料理，先讓它進 `recipes/`，再同步更新 `recipes/INDEX.md`，這樣之後查找會最快。

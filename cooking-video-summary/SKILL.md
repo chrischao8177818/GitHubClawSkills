@@ -1,6 +1,6 @@
 ---
 name: cooking-video-summary
-description: Use as the main entry point for YouTube, Shorts, Reels, recipe article, or PDF URLs, and for short aliases like "cooking <url>", "煮飯 <url>", "做菜 <url>", or "料理 <url>", that should be summarized first with gemini-summary and then structured into Traditional Chinese recipe markdown files for the repo-root `recipes/` knowledge base. Also use when the user wants to find, list, or reuse previously summarized cooking content from `recipes/` and `artifacts/`, including short commands like "列出目前所有清單" or "幫我找「客家小炒」的作法".
+description: Use as the main entry point for YouTube, Shorts, Reels, recipe article, or PDF URLs, and for short aliases like "cooking <url>", "煮飯 <url>", "做菜 <url>", or "料理 <url>", that should be summarized first with gemini-summary and then structured into Traditional Chinese recipe markdown files for the repo-root `recipes/` knowledge base. Also use when the user wants to find, list, or reuse previously summarized cooking content from `recipes/` and `artifacts/`, including the shared `recipes/INDEX.md` index and short commands like "列出目前所有清單" or "幫我找「客家小炒」的作法".
 ---
 
 # 料理影片摘要知識庫
@@ -18,7 +18,8 @@ description: Use as the main entry point for YouTube, Shorts, Reels, recipe arti
 
 - `artifacts/{issue-comment-id}/result.md`：任務回報、整理紀錄、驗證結果與執行說明。
 - `recipes/`：真正的料理知識庫成品，位置固定在 repo 根目錄下的 `recipes/`。
-- skill 內的 `recipes/`：只保留占位或範本用途，不是正式輸出目錄。
+- `recipes/INDEX.md`：共用總索引，新增料理時要同步更新。
+- `.agents/skills/cooking-video-summary/recipes/`：只保留 skill 內部占位或範本用途，不是正式輸出目錄。
 
 ## 何時使用
 
@@ -31,6 +32,8 @@ description: Use as the main entry point for YouTube, Shorts, Reels, recipe arti
 - 要查詢或新增某道料理到 repo 根目錄的 `recipes/`。
 - 要列出目前有哪些料理摘要。
 - 要找某個菜名、某種食材、某種烹飪方式的既有整理。
+- 要用食材查找料理，例如 `幫我找雞肉料理`、`幫我找木耳的料理`。
+- 要先看共用索引 `recipes/INDEX.md` 再往單篇食譜深入。
 - 使用者只輸入短別名時，也直接視為入口：
   - `cooking {網址}`
   - `煮飯 {網址}`
@@ -66,7 +69,8 @@ description: Use as the main entry point for YouTube, Shorts, Reels, recipe arti
 5. 依食材、工具、情境自動分類並加上搜尋標籤。
 6. 依檔名規則輸出成單一道料理一個檔案。
 7. 若來源資訊足夠可形成料理條目，必須同步產出一份料理 Markdown 檔到 repo 根目錄的 `recipes/`。
-8. 仍需同時寫出 `artifacts/{issue-comment-id}/result.md` 作為本次任務回報。
+8. 同步更新 `recipes/INDEX.md`，把新料理加入共用總索引。
+9. 仍需同時寫出 `artifacts/{issue-comment-id}/result.md` 作為本次任務回報。
 
 ### 2. 查找模式
 
@@ -74,24 +78,59 @@ description: Use as the main entry point for YouTube, Shorts, Reels, recipe arti
 
 查找優先順序：
 
-1. `recipes/`
-2. `artifacts/`
+1. `recipes/INDEX.md`
+2. `recipes/`
+3. `artifacts/`
 
 查找原則：
 
-- 先找檔名、標題、摘要、標籤、關鍵字。
-- 命中後，優先完整呈現原始 `.md` 內容，不要再把結果二次摘要。
+- 先找索引中的菜名、摘要、標籤、關鍵字，再進一步開單篇食譜。
+- 若只命中一筆明確結果，優先完整呈現原始 `.md` 內容，不要再把結果二次摘要。
 - 只有在使用者明確要求「濃縮」、「列重點」、「只看摘要」時，才把命中內容縮短。
-- 若命中多筆，先完整列出最相關的少量結果，再視需要補其他筆。
+- 若命中多筆，先只列出編號與料理品名，讓使用者選擇；選定後才完整呈現該料理內容。
+- 多筆清單預設不要附摘要、食材、標籤、做法或連結，避免畫面資訊過多；使用者明確要求時才補充。
 - 若找不到，明確說明沒有命中，並建議改用更精確的關鍵字。
 - 若查詢是「炒菜」「熱炒」「快炒」這類做法，優先回傳與炒鍋、快炒步驟、火候重點相關的結果。
+- 若查詢是食材名稱，例如雞肉、豬肉、木耳、番茄、豆腐，優先用 `recipes/INDEX.md` 的主要食材與標籤比對，列出最適合的料理。
+- 食材同義詞要一起比對，例如 `木耳` 也要一起看 `黑木耳`，`雞胸` 也要一起看 `雞胸肉`。
+- 多食材查詢要同時比對所有條件，例如 `雞肉 木耳` 代表要找同時符合兩種食材的料理，優先回傳交集結果。
+- 如果查詢只命中單一食材，就先回該食材相關料理；如果還有多筆，再依 `家常菜`、`便當菜`、`快速料理` 這類常見情境排序。
+- 食材查詢若命中多筆，只回傳編號與料理品名，讓使用者用編號或品名選擇要查看的料理。
+- 使用者選定料理後，再讀取並完整呈現對應的單篇 `recipes/` 食譜檔。
 - 使用者若只輸入簡短中文指令，視為查找模式，不要要求對方補上搜尋路徑。
+
+多筆命中的預設回覆格式：
+
+```md
+找到以下料理：
+
+1. 京醬炒雞絲
+2. 脆皮蔥油雞
+3. 蒜香洋菇雞腿排
+
+請回覆編號或料理名稱。
+```
+
+## 共用總索引規則
+
+- `recipes/INDEX.md` 是料理知識庫的共用總表，新增料理時一定要同步更新。
+- 索引採最新新增優先，新的料理列要插在最上方。
+- 每筆索引至少保留：
+  - 菜名
+  - 一句話摘要
+  - 類型 / 情境 / 工具
+  - 主要食材
+  - 整理日期
+  - 對應料理檔連結
+- 若來源資訊不足，索引仍保留一筆最小可用資訊，並標記 `摘要未明確說明`。
+- `recipes/INDEX.md` 只做導覽與瀏覽入口，正式內容仍以單篇料理檔為準。
 
 ## 查找時可回答的內容
 
 - 列出目前有哪些料理
 - 查某一道菜的做法
 - 找某個食材可以做哪些料理
+- 找食材對應的料理，例如雞肉、木耳、番茄、豆腐
 - 找某一種工具的料理，例如電鍋、氣炸鍋、炒鍋
 - 找某一種情境的料理，例如便當菜、快速料理、家常菜
 - 比對多道相似料理
@@ -106,6 +145,8 @@ description: Use as the main entry point for YouTube, Shorts, Reels, recipe arti
 - `列出電鍋料理`
 - `找番茄相關料理`
 - `找所有高蛋白料理`
+- `幫我找雞肉料理`
+- `幫我找木耳的料理`
 - `查「鮮魚炊飯」`
 - `比對客家小炒和鮮魚炊飯`
 
@@ -193,7 +234,13 @@ description: Use as the main entry point for YouTube, Shorts, Reels, recipe arti
 
 ## 入口提醒
 
-使用者若直接輸入來源網址，或是使用類似 `cooking-video-summary <url>` 的短指令時，視為摘要模式入口，先呼叫 `gemini-summary`，再進行食譜整理。
+當使用者直接丟入影片、Shorts、Reels、PDF 或食譜文章網址時，視為摘要模式入口，先呼叫 `gemini-summary`，再進行食譜整理與索引更新。
+
+如果使用者直接輸入 `cooking-video-summary <url>`、`cooking <url>`、`煮飯 <url>`、`做菜 <url>`、`料理 <url>` 這類短指令，也一樣要先走 `gemini-summary`。
+
+如果來源是查找料理清單、菜名或做法，則優先查 `recipes/INDEX.md`，再往單篇 `recipes/` 食譜檔深入。
+
+`.agents/skills/cooking-video-summary/recipes/` 只保留 skill 內部占位，不可把正式料理成品寫在這裡；正式成品一律寫入 repo 根目錄的 `recipes/`。
 
 ## 輸出模板
 
@@ -205,8 +252,6 @@ description: Use as the main entry point for YouTube, Shorts, Reels, recipe arti
 
 ## 產出位置
 
-將每道料理寫成獨立檔案，存到 repo 根目錄的 `recipes/`。
-
-若需要在 skill 內保留範本，僅限於 `recipes/` 的占位檔，不可把正式料理成品寫在這裡。
+將每道料理寫成獨立檔案，存到 `recipes/`。
 
 如果需要建立新檔，先確認檔名符合規則，再寫入內容。
